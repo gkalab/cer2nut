@@ -18,6 +18,7 @@ class ChessnutConverterTest : public ::testing::Test {
             [this](uint8_t* data, size_t data_len) {
                 convertedInfo = std::vector<uint8_t>(&data[0], &data[data_len]);
             });
+        whenChessnutToCertaboCommandIsCalledWith({0x21, 0x01, 0x00}); // enable real-time mode
     }
 
     void whenConvertingBoard(std::array<eboard::StoneId, 64> const& board) {

@@ -42,6 +42,10 @@ class ChessnutAdapterTest : public ::testing::Test {
                 // toBle
                 toBleData = std::vector<uint8_t>(&data[0], &data[data_len]);
             });
+        // init with real time mode
+        std::vector<uint8_t> realTimeMode{0x21, 0x01, 0x00};
+        adapter->fromBle(&realTimeMode.front(), realTimeMode.size());
+        toBleData.clear();
     }
 
     void givenCalibrationDataIsReceived() {

@@ -58,6 +58,7 @@ class ChessnutConverter {
 
     ConverterCallbackFunction boardCallback;
     ConverterCallbackFunction infoCallback;
+    bool realTimeMode = false;
 };
 
 } // namespace eboard

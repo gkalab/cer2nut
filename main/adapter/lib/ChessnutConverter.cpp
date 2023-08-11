@@ -22,22 +22,24 @@ static std::vector<uint8_t> dateTime() {
 }
 
 void ChessnutConverter::process(const std::array<eboard::StoneId, 64>& board) {
-    std::array<uint8_t, 38> converted{};
-    converted[0] = 0x01;
-    converted[1] = 0x24;
-    int j = 33;
-    for (int i = 0; i < 64; i += 2) {
-        converted[j] = setUpperNibble(converted[j], stoneToChessnutStone(board[i]));
-        converted[j] = setLowerNibble(converted[j], stoneToChessnutStone(board[i + 1]));
-        j--;
+    if (realTimeMode) {
+        std::array<uint8_t, 38> converted{};
+        converted[0] = 0x01;
+        converted[1] = 0x24;
+        int j = 33;
+        for (int i = 0; i < 64; i += 2) {
+            converted[j] = setUpperNibble(converted[j], stoneToChessnutStone(board[i]));
+            converted[j] = setLowerNibble(converted[j], stoneToChessnutStone(board[i + 1]));
+            j--;
+        }
+        // add time
+        std::vector<uint8_t> convertedSeconds = dateTime();
+        converted[34] = convertedSeconds[0];
+        converted[35] = convertedSeconds[1];
+        converted[36] = convertedSeconds[2];
+        converted[37] = convertedSeconds[3];
+        boardCallback(converted.data(), 38);
     }
-    // add time
-    std::vector<uint8_t> convertedSeconds = dateTime();
-    converted[34] = convertedSeconds[0];
-    converted[35] = convertedSeconds[1];
-    converted[36] = convertedSeconds[2];
-    converted[37] = convertedSeconds[3];
-    boardCallback(converted.data(), 38);
 }
 
 uint8_t ChessnutConverter::setLowerNibble(uint8_t orig, uint8_t nibble) {
@@ -80,9 +82,11 @@ std::vector<uint8_t> eboard::ChessnutConverter::chessnutToCertaboCommand(uint8_t
     std::vector<uint8_t> received(&data[0], &data[data_len]);
     if (received.size() >= 3 && received[0] == 0x21 && received[1] == 0x01 && received[2] == 0x00) { // real time mode
         infoCallback(ack.data(), ack.size());
+        realTimeMode = true;
     } else if (received.size() >= 3 && received[0] == 0x21 && received[1] == 0x01 &&
                received[2] == 0x01) { // upload mode
         infoCallback(ack.data(), ack.size());
+        realTimeMode = false;
     } else if (received.size() >= 3 && received[0] == 0x29 && received[1] == 0x01 &&
                received[2] == 0x00) {                               // battery status
         auto result = std::vector<uint8_t>{0x2a, 0x02, 0x64, 0x00}; // battery full, not loading
