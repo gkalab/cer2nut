@@ -63,6 +63,20 @@ static const ble_uuid128_t gatt_svr_chr_board_read_uuid =
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
+        /* Service: board */
+        .type = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid = &gatt_svr_svc_board_uuid.u,
+        .characteristics = (struct ble_gatt_chr_def[]){{
+                                                           .uuid = &gatt_svr_chr_board_read_uuid.u,
+                                                           .access_cb = BleUart::gatt_svr_chr_access_uart_write,
+                                                           .flags = BLE_GATT_CHR_F_NOTIFY,
+                                                           .val_handle = &BleUart::g_bleuart_attr_board_read_handle,
+                                                       },
+                                                       {
+                                                           .uuid = 0, /* No more characteristics in this service */
+                                                       }},
+    },
+    {
         /* Service: main */
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
         .uuid = &gatt_svr_svc_main_uuid.u,
@@ -78,20 +92,6 @@ const struct ble_gatt_svc_def gatt_svr_svcs[] = {
                                                            .access_cb = BleUart::gatt_svr_chr_access_uart_write,
                                                            .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_NO_RSP,
                                                            .val_handle = &BleUart::g_bleuart_attr_write_handle,
-                                                       },
-                                                       {
-                                                           .uuid = 0, /* No more characteristics in this service */
-                                                       }},
-    },
-    {
-        /* Service: board */
-        .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid = &gatt_svr_svc_board_uuid.u,
-        .characteristics = (struct ble_gatt_chr_def[]){{
-                                                           .uuid = &gatt_svr_chr_board_read_uuid.u,
-                                                           .access_cb = BleUart::gatt_svr_chr_access_uart_write,
-                                                           .flags = BLE_GATT_CHR_F_NOTIFY,
-                                                           .val_handle = &BleUart::g_bleuart_attr_board_read_handle,
                                                        },
                                                        {
                                                            .uuid = 0, /* No more characteristics in this service */
