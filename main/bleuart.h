@@ -10,6 +10,14 @@ class BleUart {
     static uint16_t g_bleuart_attr_read_handle;
     static uint16_t g_bleuart_attr_board_read_handle;
     static uint16_t g_bleuart_attr_write_handle;
+    static uint16_t g_bleuart_attr_upload_read_handle;
+    static uint16_t g_bleuart_attr_upload_write_handle;
+    static uint16_t g_bleuart_attr_unknown_read_handle;
+    static uint16_t g_bleuart_attr_unknown_write1_handle;
+    static uint16_t g_bleuart_attr_unknown_write2_handle;
+    static uint16_t g_bleuart_attr_device_name_read_handle;
+    static uint16_t g_bleuart_attr_appearance_read_handle;
+    static uint16_t g_bleuart_attr_service_changed_indicate_handle;
     static uint16_t g_console_conn_handle;
     static bool connected;
 
@@ -19,6 +27,16 @@ class BleUart {
     // Write data to ESP32 defined as server
     static int gatt_svr_chr_access_uart_write(uint16_t conn_handle, uint16_t attr_handle,
                                               struct ble_gatt_access_ctxt* ctxt, void* arg);
+
+    static int gatt_svr_chr_access_service_changed_indicate(uint16_t conn_handle, uint16_t attr_handle,
+                                                            struct ble_gatt_access_ctxt* ctxt, void* arg);
+
+    static int gatt_svr_chr_access_device_name_read(uint16_t conn_handle, uint16_t attr_handle,
+                                                    struct ble_gatt_access_ctxt* ctxt, void* arg);
+
+    static int gatt_svr_chr_access_appearance_read(uint16_t conn_handle, uint16_t attr_handle,
+                                                   struct ble_gatt_access_ctxt* ctxt, void* arg);
+
     /**
      * Enables advertising with the following parameters:
      *     o General discoverable mode.
