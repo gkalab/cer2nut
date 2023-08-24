@@ -346,7 +346,7 @@ int BleUart::gatt_svr_chr_access_uart_write(uint16_t conn_handle, uint16_t attr_
         }
         return 0;
     default:
-        return BLE_ATT_ERR_UNLIKELY;
+        return 0;
     }
     return 0;
 }
