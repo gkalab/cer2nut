@@ -1,5 +1,6 @@
 #include <gmock/gmock.h>
 
+#include <array>
 #include <vector>
 
 #include "BoardTranslator.h"
@@ -17,7 +18,8 @@ class CertaboParserTest : public ::testing::Test {
     class MockBoardTranslator : public BoardTranslator {
       public:
         MOCK_METHOD(void, hasPieceRecognition, (bool pieceRecognition), (override));
-        MOCK_METHOD(void, translate, (std::vector<CertaboPiece> board), (override));
+        MOCK_METHOD(void, translate, (std::vector<CertaboPiece> const& board), (override));
+        MOCK_METHOD(void, translateOccupiedSquares, ((std::array<bool, 64> const& occupied)), (override));
     };
 
   protected:
@@ -41,6 +43,14 @@ class CertaboParserTest : public ::testing::Test {
 
     void expectTranslateToBeCalled(int times = 1) {
         EXPECT_CALL(translator, translate(_)).Times(times);
+    }
+
+    void expectTranslateOccupiedSquaresToBeCalled(int times = 1) {
+        EXPECT_CALL(translator, translateOccupiedSquares(_)).Times(times);
+    }
+
+    void expectTranslateOccupiedSquaresToBeCalledWith(std::array<bool, 64> const& expected) {
+        EXPECT_CALL(translator, translateOccupiedSquares(expected)).Times(1);
     }
 
     void expectNoCallsToTranslate() {
@@ -154,4 +164,24 @@ TEST_F(CertaboParserTest, parsePositionInTwoParts) {
                            "85 0 67 3 0 84 121 142 3 0 84 105 128 3 0 84 106 231 3 0 84 247 \n"
                            "87 3 0 84 252 17");
     whenParseIsCalledWith("0\nL\r\n");
+}
+
+TEST_F(CertaboParserTest, parsePositionTabutronic) {
+    expectTranslateOccupiedSquaresToBeCalled();
+    whenParseIsCalledWith(":255 255 0 0 0 0 255 255\r\n");
+}
+
+TEST_F(CertaboParserTest, parsePositionTabutronicOnePieceMissing) {
+    std::array<bool, 64> board{
+        true,  true,  true,  true,  true,  true,  true,  true,  //
+        true,  true,  true,  true,  true,  true,  true,  true,  //
+        false, false, false, false, false, false, false, false, //
+        false, false, false, false, false, false, false, false, //
+        false, false, false, false, false, false, false, false, //
+        false, false, false, false, false, false, false, false, //
+        true,  true,  true,  true,  true,  true,  true,  true,  //
+        true,  true,  true,  true,  true,  true,  true,  false, //
+    };
+    expectTranslateOccupiedSquaresToBeCalledWith(board);
+    whenParseIsCalledWith(":255 255 0 0 0 0 255 254\nL\r\n");
 }

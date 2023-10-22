@@ -12,11 +12,11 @@ using PieceId = std::array<uint8_t, 5>;
  */
 class CertaboPiece {
   public:
-    explicit CertaboPiece(std::array<uint8_t, 5> pieceId);
+    explicit CertaboPiece(std::array<uint8_t, 5> const& pieceId);
 
     PieceId& getId();
 
-    friend bool operator<(const CertaboPiece& c1, const CertaboPiece& c2) {
+    friend bool operator<(CertaboPiece const& c1, CertaboPiece const& c2) {
         std::string c1id;
         for (int i = 0; i < 5; i++) {
             c1id += std::to_string(c1.pieceId[i]) + " ";

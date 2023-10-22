@@ -15,9 +15,16 @@ using eboard::CertaboPiece;
 class CertaboBoardMessageParserTest : public ::testing::Test {
   protected:
     void SetUp() override {
+        boardMessageParser = std::make_unique<CertaboBoardMessageParser>(
+            [this](std::array<eboard::StoneId, 64> board) {
+                parsedBoard = board;
+            },
+            [this](bool pieceRecognition) {
+                hasPieceRecognition = pieceRecognition;
+            });
         CertaboCalibrator calibrator(
-            [this](eboard::Stones const& stns) {
-                stones = stns;
+            [this](eboard::Stones const& stones) {
+                boardMessageParser->updateStones(stones);
             },
             [](int square) {});
         std::string boardData(
@@ -34,10 +41,6 @@ class CertaboBoardMessageParserTest : public ::testing::Test {
         for (int i = 0; i < 7; i++) {
             calibrator.calibrate(&data.front(), data.size());
         }
-        boardMessageParser =
-            std::make_unique<CertaboBoardMessageParser>(stones, [this](std::array<eboard::StoneId, 64> board) {
-                parsedBoard = board;
-            });
     }
 
     void givenParsedInput(std::string const& str) {
@@ -53,10 +56,14 @@ class CertaboBoardMessageParserTest : public ::testing::Test {
         EXPECT_EQ(parsedBoard, board);
     }
 
+    void thenPieceRecognitionShouldBe(bool expected) {
+        EXPECT_EQ(expected, hasPieceRecognition);
+    }
+
   private:
     std::unique_ptr<CertaboBoardMessageParser> boardMessageParser;
-    eboard::Stones stones;
     std::array<eboard::StoneId, 64> parsedBoard = {};
+    bool hasPieceRecognition = false;
 };
 
 static std::string INITIAL_POSITION(
@@ -88,6 +95,11 @@ static std::string INITIAL_POSITION_WITH_NOISE(
     "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 48 0 248 85 122 48 0 248 73 250 48 0 248 201 109 "
     "48 0 248 144 65 48 0 177 231 217 48 0 248 76 179 48 0 248 161 89 48 0 30 124 13 48 0 248 98 180 48 0 248 "
     "233 43 48 0 248 86 247 48 0 248 145 6 48 0 248 104 144 48 0 248 79 194 48 0 248 134 85 48 0 177 81 73\r\n");
+
+TEST_F(CertaboBoardMessageParserTest, parseInitialPositionCallsPieceRecognitionCallback) {
+    whenParsingInput(INITIAL_POSITION);
+    thenPieceRecognitionShouldBe(true);
+}
 
 TEST_F(CertaboBoardMessageParserTest, parseInitialPosition) {
     whenParsingInput(INITIAL_POSITION);

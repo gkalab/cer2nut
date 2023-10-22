@@ -21,7 +21,7 @@ static std::vector<uint8_t> dateTime() {
     return converted;
 }
 
-void ChessnutConverter::process(const std::array<eboard::StoneId, 64>& board) {
+void ChessnutConverter::process(std::array<eboard::StoneId, 64> const& board) {
     if (realTimeMode) {
         std::array<uint8_t, 38> converted{};
         converted[0] = 0x01;

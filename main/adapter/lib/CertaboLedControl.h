@@ -23,12 +23,15 @@ class CertaboLedControl {
 
     void ledCommand(std::vector<uint8_t> const& command);
 
+    void setProcessingTime(int processingTimeMillis);
+
   private:
-    static std::vector<uint8_t> LEDS_OFF;
+    static std::vector<uint8_t> const LEDS_OFF;
     void processCommands();
 
     ToUsbFunction toUsb;
     std::list<std::vector<uint8_t>> pendingCommands;
+    int processingTimeMs = 600;
     uint64_t lastCommandTime = 0;
     std::vector<uint8_t> lastCommand;
     std::atomic_bool keepRunning;

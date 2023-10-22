@@ -32,7 +32,6 @@ void eboard::CalibrationSquare::calibratePiece(std::vector<std::vector<CertaboPi
             piece = CertaboPiece(pc.getId());
             if (pc.getId() != PieceId{}) {
                 completeForSquareFunction(toSquare(square));
-                //printf("calibration complete for square %d\n", toSquare(square));
             }
         }
     }

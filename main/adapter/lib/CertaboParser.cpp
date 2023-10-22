@@ -18,7 +18,7 @@ void CertaboParser::parse(uint8_t* msg, size_t data_len) {
         if (input_str.find("\r\n") == std::string::npos) {
             buffer.insert(buffer.end(), data.begin(), data.end());
         } else {
-            std::vector<std::string> split_data = strsplit<std::string>(input_str, ":");
+            std::vector<std::string> split_data = strSplit<std::string>(input_str, ":");
             int index = 0;
             for (auto& part : split_data) {
                 if (!part.empty() && !parsePart(part) && index == (split_data.size() - 1)) {
@@ -39,7 +39,7 @@ bool CertaboParser::parsePart(std::string& part) {
                                   return (x == '\r' || x == '\n' || x == 'L');
                               }),
                part.end());
-    std::vector<std::string> split_input = strsplit<std::string>(part, " ");
+    std::vector<std::string> split_input = strSplit<std::string>(part, " ");
     if (!pieceRecognition && split_input.size() > 8) {
         pieceRecognition = true;
         translator.hasPieceRecognition(true);
@@ -47,18 +47,17 @@ bool CertaboParser::parsePart(std::string& part) {
     if (pieceRecognition) {
         return parseWithPieceInfo(split_input);
     } else {
-        // TODO Sentio eboard
+        return parseWithoutPieceInfo(split_input);
     }
-    return false;
 }
 
-bool CertaboParser::parseWithPieceInfo(std::vector<std::string> split_input) {
-    if (split_input.size() >= 320) {
+bool CertaboParser::parseWithPieceInfo(std::vector<std::string>& splitInput) {
+    if (splitInput.size() >= 320) {
         std::vector<CertaboPiece> board;
         for (int square = 0; square < 64; square++) {
             std::array<uint8_t, 5> piece_id{0, 0, 0, 0, 0};
             for (int i = 0; i < 5; i++) {
-                std::basic_string<char>& str = split_input.at(square * 5 + i);
+                std::basic_string<char>& str = splitInput.at(square * 5 + i);
                 errno = 0;
                 char* p_end{};
                 const char* p = str.c_str();
@@ -74,6 +73,36 @@ bool CertaboParser::parseWithPieceInfo(std::vector<std::string> split_input) {
             board.push_back(piece);
         }
         translator.translate(board);
+        buffer.clear();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool CertaboParser::parseWithoutPieceInfo(std::vector<std::string>& splitInput) {
+    if (splitInput.size() >= 8) {
+        std::array<bool, 64> board{};
+        for (int i = 0, row = 0; row < 8; row++) {
+            std::basic_string<char>& str = splitInput.at(row);
+            errno = 0;
+            char* p_end{};
+            const char* p = str.c_str();
+            const long value = std::strtol(p, &p_end, 10);
+            if ((p && *p_end != 0) || p == p_end || errno == ERANGE) {
+                buffer.clear();
+                return false;
+            } else {
+                uint8_t b = value; // std::stoi(str); -- no error checking with stoi
+                for (int col = 7; col > -1; col--) {
+                    if ((b & (1 << col)) != 0) {
+                        board[i] = true; // occupied
+                    }
+                    i++;
+                }
+            }
+        }
+        translator.translateOccupiedSquares(board);
         buffer.clear();
         return true;
     } else {

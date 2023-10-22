@@ -28,7 +28,7 @@ void CertaboCalibrator::hasPieceRecognition(bool) {
     // ignore
 }
 
-void CertaboCalibrator::translate(std::vector<CertaboPiece> board) {
+void CertaboCalibrator::translate(std::vector<CertaboPiece> const& board) {
     receivedBoards.push_back(board);
     if (receivedBoards.size() >= 7 && !calibrationComplete) {
         if (checkPieces()) {

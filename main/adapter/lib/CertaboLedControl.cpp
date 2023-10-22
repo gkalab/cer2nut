@@ -2,7 +2,7 @@
 
 using eboard::CertaboLedControl;
 
-std::vector<uint8_t> CertaboLedControl::LEDS_OFF{0, 0, 0, 0, 0, 0, 0, 0};
+std::vector<uint8_t> const CertaboLedControl::LEDS_OFF{0, 0, 0, 0, 0, 0, 0, 0};
 
 CertaboLedControl::CertaboLedControl(ToUsbFunction toUsb) : toUsb(std::move(toUsb)), keepRunning(true) {
     processCommands();
@@ -20,6 +20,10 @@ void CertaboLedControl::ledCommand(std::vector<uint8_t> const& command) {
     pendingCommands.push_back(command);
 }
 
+void CertaboLedControl::setProcessingTime(int processingTimeMillis) {
+    processingTimeMs = processingTimeMillis;
+}
+
 void CertaboLedControl::processCommands() {
     processingThread = std::thread([this]() {
         while (keepRunning) {
@@ -34,7 +38,7 @@ void CertaboLedControl::processCommands() {
             uint64_t currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(
                                        std::chrono::steady_clock::now().time_since_epoch())
                                        .count();
-            if ((lastCommandTime + 600) <= currentTime && !pendingCommands.empty()) {
+            if ((lastCommandTime + processingTimeMs) <= currentTime && !pendingCommands.empty()) {
                 auto cmd = pendingCommands.front();
                 pendingCommands.pop_front();
                 if (cmd != lastCommand) {

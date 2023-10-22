@@ -50,7 +50,7 @@ class ChessnutAdapterTest : public ::testing::Test {
 
     void givenCalibrationDataIsReceived() {
         std::vector<uint8_t> data(boardDataWithQueens.begin(), boardDataWithQueens.end());
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             adapter->fromUsb(&data.front(), data.size());
         }
     }
@@ -80,7 +80,7 @@ class ChessnutAdapterTest : public ::testing::Test {
     std::unique_ptr<ChessnutAdapter> adapter;
     std::vector<uint8_t> toBleData;
 
-    std::string toHex(unsigned const char* data, int len) {
+    static std::string toHex(unsigned const char* data, int len) {
         std::stringstream ss;
         ss << std::hex;
         for (int i = 0; i < len; ++i) {

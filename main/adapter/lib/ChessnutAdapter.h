@@ -43,23 +43,25 @@ class ChessnutAdapter {
     void ledCommand(std::vector<uint8_t> const& command);
 
     /**
-     * @return whether the Certabo board is calibrated
+     * @return whether the Certabo board is calibrated or the Sentio board is ready
      */
-    bool isCalibrated() const;
+    bool isReady() const;
 
   private:
+    static std::array<eboard::StoneId, 64> const STANDARD_POSITION;
+
     static void clearBitForSquare(std::vector<uint8_t>& data, int square);
+    void lightCenterLeds();
 
     std::vector<uint8_t> calibrationLeds;
     eboard::CertaboLedControl ledControl;
     ToBleFunction toBle;
+    CertaboBoardMessageParser boardMessageParser;
     CertaboCalibrator calibrator;
     ChessnutConverter converter;
-    eboard::Stones stones;
     bool calibrationComplete = false;
+    bool pieceRecognition = false;
     bool initialPositionReceived = false;
-    std::unique_ptr<CertaboBoardMessageParser> boardMessageParser;
-    static std::array<eboard::StoneId, 64> const standardPosition;
 };
 
 } // namespace eboard

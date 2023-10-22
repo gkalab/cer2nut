@@ -18,7 +18,7 @@ class CertaboParser {
     void parse(uint8_t* data, size_t data_len);
 
   private:
-    template <typename T> std::vector<T> strsplit(const T& str, const T& delimiters) {
+    template <typename T> std::vector<T> strSplit(const T& str, const T& delimiters) {
         std::vector<T> v;
         typename T::size_type start = 0;
         auto pos = str.find_first_of(delimiters, start);
@@ -35,8 +35,9 @@ class CertaboParser {
         return v;
     }
 
-    bool parsePart(std::string& part);
-    bool parseWithPieceInfo(std::vector<std::string> split_input);
+    bool parsePart(std::string & part);
+    bool parseWithPieceInfo(std::vector<std::string> &splitInput);
+    bool parseWithoutPieceInfo(std::vector<std::string> &splitInput);
 
     BoardTranslator& translator;
     std::vector<uint8_t> buffer;

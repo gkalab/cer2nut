@@ -2,7 +2,7 @@
 
 using eboard::CertaboPiece;
 
-CertaboPiece::CertaboPiece(eboard::PieceId pieceId) : pieceId(pieceId) {}
+CertaboPiece::CertaboPiece(eboard::PieceId const &pieceId) : pieceId(pieceId) {}
 
 eboard::PieceId& CertaboPiece::getId() {
     return pieceId;

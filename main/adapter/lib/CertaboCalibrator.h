@@ -17,7 +17,7 @@ using Stones = std::map<CertaboPiece, StoneId>;
 /**
  * Function to be called when calibration is complete.
  */
-using CalibrationCompleteFunction = std::function<void(Stones)>;
+using CalibrationCompleteFunction = std::function<void(Stones&)>;
 
 /**
  * CertaboCalibrator calibrates the board.
@@ -41,7 +41,11 @@ class CertaboCalibrator : public BoardTranslator {
      * Function called by the used parser to translate the raw piece information.
      * @param board parsed board with raw piece information
      */
-    void translate(std::vector<CertaboPiece> board) override;
+    void translate(std::vector<CertaboPiece> const& board) override;
+
+    void translateOccupiedSquares(std::array<bool, 64> const& board) override{
+        // ignore
+    };
 
     /**
      * Calibrate raw board data.

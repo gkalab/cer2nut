@@ -105,6 +105,20 @@ static const ble_uuid16_t gatt_svr_chr_service_changed_uuid = BLE_UUID16_INIT(0x
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
+        /* Service: board */
+        .type = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid = &gatt_svr_svc_board_uuid.u,
+        .characteristics = (struct ble_gatt_chr_def[]){{
+                                                           .uuid = &gatt_svr_chr_board_read_uuid.u,
+                                                           .access_cb = BleUart::gatt_svr_chr_access_uart_write,
+                                                           .flags = BLE_GATT_CHR_F_NOTIFY,
+                                                           .val_handle = &BleUart::g_bleuart_attr_board_read_handle,
+                                                       },
+                                                       {
+                                                           .uuid = 0, /* No more characteristics in this service */
+                                                       }},
+    },
+    {
         // Mandatory service 0x1801
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
         .uuid = &gatt_svr_svc_generic_attrib_uuid.u,
@@ -139,20 +153,6 @@ const struct ble_gatt_svc_def gatt_svr_svcs[] = {
                                         {
                                             .uuid = 0, // No more characteristics in this service
                                         }},
-    },
-    {
-        /* Service: board */
-        .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid = &gatt_svr_svc_board_uuid.u,
-        .characteristics = (struct ble_gatt_chr_def[]){{
-                                                           .uuid = &gatt_svr_chr_board_read_uuid.u,
-                                                           .access_cb = BleUart::gatt_svr_chr_access_uart_write,
-                                                           .flags = BLE_GATT_CHR_F_NOTIFY,
-                                                           .val_handle = &BleUart::g_bleuart_attr_board_read_handle,
-                                                       },
-                                                       {
-                                                           .uuid = 0, /* No more characteristics in this service */
-                                                       }},
     },
     {
         /* Service: main */
@@ -280,14 +280,14 @@ int BleUart::bleuart_gap_event(struct ble_gap_event* event, void* arg) {
             assert(rc == 0);
             g_console_conn_handle = event->connect.conn_handle;
             connected = true;
-            if (chessnutAdapter.isCalibrated()) {
+            if (chessnutAdapter.isReady()) {
                 chessnutAdapter.ledCommand({0, 0, 0, 0, 0, 0, 0, 0});
             }
         } else {
             /* Connection failed; resume advertising. */
             connected = false;
             bleuart_advertise();
-            if (chessnutAdapter.isCalibrated()) {
+            if (chessnutAdapter.isReady()) {
                 chessnutAdapter.ledCommand({0, 0, 0, 0x18, 0x18, 0, 0, 0});
             }
         }
@@ -298,7 +298,7 @@ int BleUart::bleuart_gap_event(struct ble_gap_event* event, void* arg) {
         /* Connection terminated; resume advertising. */
         connected = false;
         bleuart_advertise();
-        if (chessnutAdapter.isCalibrated()) {
+        if (chessnutAdapter.isReady()) {
             chessnutAdapter.ledCommand({0, 0, 0, 0x18, 0x18, 0, 0, 0});
         }
         return 0;
