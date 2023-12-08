@@ -118,16 +118,22 @@ bool eboard::Sentio::takeBackMove(std::vector<uint8_t> const& occupiedSquares) {
 void eboard::Sentio::checkValidMove(std::vector<uint8_t> const& expectedSquares,
                                     std::vector<uint8_t> const& occupiedSquares) {
     std::vector<uint8_t> missing;
-    std::set_difference(expectedSquares.begin(), expectedSquares.end(), occupiedSquares.begin(), occupiedSquares.end(),
-                        std::inserter(missing, missing.begin()));
     std::vector<uint8_t> extra;
-    std::set_difference(occupiedSquares.begin(), occupiedSquares.end(), expectedSquares.begin(), expectedSquares.end(),
-                        std::inserter(extra, extra.begin()));
-    if (!nonCaptureMove(missing, extra)) {
+    setDifference(expectedSquares, occupiedSquares, missing, extra);
+    if (!nonCaptureMove(occupiedSquares, missing, extra)) {
         if (!captureMove(missing, extra)) {
             incompleteMove(missing, extra);
         }
     }
+}
+
+void eboard::Sentio::setDifference(const std::vector<uint8_t>& expectedSquares,
+                                   const std::vector<uint8_t>& occupiedSquares, std::vector<uint8_t>& missing,
+                                   std::vector<uint8_t>& extra) {
+    std::set_difference(expectedSquares.begin(), expectedSquares.end(), occupiedSquares.begin(), occupiedSquares.end(),
+                        std::inserter(missing, missing.begin()));
+    std::set_difference(occupiedSquares.begin(), occupiedSquares.end(), expectedSquares.begin(), expectedSquares.end(),
+                        std::inserter(extra, extra.begin()));
 }
 
 static uint8_t toBoardArraySquare(uint8_t sq) {
@@ -136,9 +142,26 @@ static uint8_t toBoardArraySquare(uint8_t sq) {
     return (7 - rank) * 8 + file;
 }
 
-bool eboard::Sentio::nonCaptureMove(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra) {
+bool eboard::Sentio::nonCaptureMove(std::vector<uint8_t> const& occupiedSquares, std::vector<uint8_t> const& missing,
+                                    std::vector<uint8_t> const& extra) {
     if (capturePiece == nullptr && missing.size() == 1 && extra.size() == 1) {
-        if (!makeMove(missing[0], extra[0])) {
+        if (makeMove(missing[0], extra[0])) {
+            std::vector<uint8_t> expectedSquares = board.getOccupiedSquares();
+            if (expectedSquares == occupiedSquares) {
+                callCallback(toBoardArray(board));
+            } else {
+                // castles - need rooks to move as well
+                std::vector<uint8_t> miss;
+                std::vector<uint8_t> ex;
+                setDifference(expectedSquares, occupiedSquares, miss, ex);
+                if (miss.size() == 1 && ex.size() == 1) {
+                    std::array<StoneId, 64> boardArray = toBoardArray(board);
+                    boardArray[toBoardArraySquare(ex[0])] = PIECE_TO_STONE_ID.at(board.getPiece(miss[0]));
+                    boardArray[toBoardArraySquare(miss[0])] = 0;
+                    callCallback(boardArray);
+                }
+            }
+        } else {
             std::array<StoneId, 64> boardArray = toBoardArray(board);
             boardArray[toBoardArraySquare(extra[0])] = board.getPiece(missing[0]);
             boardArray[toBoardArraySquare(missing[0])] = 0;
@@ -182,12 +205,16 @@ bool eboard::Sentio::captureMove(std::vector<uint8_t> const& missing, std::vecto
         uint8_t fromSquare = capturePiece->getFromSquare();
         uint8_t toSquare = capturePiece->getToSquare();
         capturePiece.reset();
-        return makeMove(fromSquare, toSquare);
+        bool result = makeMove(fromSquare, toSquare);
+        callCallback(toBoardArray(board));
+        return result;
     } else if (capturePiece != nullptr && isPossibleEpCapture(missing, extra)) {
         uint8_t fromSquare = capturePiece->getFromSquare();
         uint8_t toSquare = extra[0];
         capturePiece.reset();
-        return makeMove(fromSquare, toSquare);
+        bool result = makeMove(fromSquare, toSquare);
+        callCallback(toBoardArray(board));
+        return result;
     }
     return false;
 }
@@ -197,9 +224,7 @@ bool eboard::Sentio::makeMove(uint8_t fromSquare, uint8_t toSquare) {
     int i = 1;
     for (uint32_t move : moves) {
         if (fromSquare == get_move_source_64(move) && toSquare == get_move_target_64(move)) {
-            board.make_move(move);
-            callCallback(toBoardArray(board));
-            return true;
+            return board.make_move(move);
         }
         i++;
     }

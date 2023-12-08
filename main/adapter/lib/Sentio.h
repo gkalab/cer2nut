@@ -30,9 +30,12 @@ class Sentio {
     static std::vector<uint8_t> toSquares(const std::array<bool, 64>& occupied);
     void callCallback(std::array<StoneId, 64> const& boardArray);
     static std::array<StoneId, 64> toBoardArray(chess::Chess0x88& chessBoard);
-    bool takeBackMove(std::vector<uint8_t> const &occupiedSquares);
+    bool takeBackMove(std::vector<uint8_t> const& occupiedSquares);
     void checkValidMove(std::vector<uint8_t> const& expectedSquares, std::vector<uint8_t> const& occupiedSquares);
-    bool nonCaptureMove(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra);
+    static void setDifference(const std::vector<uint8_t>& expectedSquares, const std::vector<uint8_t>& occupiedSquares,
+                        std::vector<uint8_t>& missing, std::vector<uint8_t>& extra) ;
+    bool nonCaptureMove(std::vector<uint8_t> const& occupied, std::vector<uint8_t> const& missing,
+                        std::vector<uint8_t> const& extra);
     bool captureMove(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra);
     void incompleteMove(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra);
     bool makeMove(uint8_t fromSquare, uint8_t toSquare);

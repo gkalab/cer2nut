@@ -139,6 +139,17 @@ TEST_F(SentioTest, captureMove) {
     thenLastReceivedBoardShouldBe("rnbqkbnr/ppp1pppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR");
 }
 
+TEST_F(SentioTest, castlesMove) {
+    givenAnInstance("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4");
+    givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ3R"); // Ke1 up
+    givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ2KR"); // Kg1 down
+    thenLastReceivedBoardShouldBe("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ2KR");
+    givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ2K1"); // Rh1 up
+    thenLastReceivedBoardShouldBe("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ2K1");
+    givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ1RK1"); // Rf1 down
+    thenLastReceivedBoardShouldBe("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ1RK1");
+}
+
 TEST_F(SentioTest, gameSequenceThreeCaptureMovesApart) {
     givenAnInstance();
     // game sequence: 1. e4 c5 2. Nf3 d6 3. Bb5+ Bd7 4. Bxd7+ Qxd7 5. h4 Qc6 6. h5 Qxe4+
