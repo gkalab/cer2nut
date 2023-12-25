@@ -37,13 +37,17 @@ class Sentio {
     bool nonCaptureMove(std::vector<uint8_t> const& occupied, std::vector<uint8_t> const& missing,
                         std::vector<uint8_t> const& extra);
     bool captureMove(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra);
-    void incompleteMove(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra);
+    void incompleteMove(std::vector<uint8_t> const& missing);
+    void checkForPromotionPieceChange(const std::vector<uint8_t>& missing);
     bool makeMove(uint8_t fromSquare, uint8_t toSquare);
+    void resetPromoteToPieces();
     static bool isPossibleCapture(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra);
     bool isPossibleEpCapture(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra);
 
     BoardCallbackFunction callback;
     chess::Chess0x88 board;
+    uint32_t promoteToPieceWhite = chess::pieces::Q;
+    uint32_t promoteToPieceBlack = chess::pieces::q;
     std::unique_ptr<CapturePiece> capturePiece;
     std::array<bool, 64> lastProcessedOccupiedSquares{};
     std::array<bool, 64> lastReceivedOccupiedSquares{};

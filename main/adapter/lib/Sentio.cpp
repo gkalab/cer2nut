@@ -122,7 +122,7 @@ void eboard::Sentio::checkValidMove(std::vector<uint8_t> const& expectedSquares,
     setDifference(expectedSquares, occupiedSquares, missing, extra);
     if (!nonCaptureMove(occupiedSquares, missing, extra)) {
         if (!captureMove(missing, extra)) {
-            incompleteMove(missing, extra);
+            incompleteMove(missing);
         }
     }
 }
@@ -150,7 +150,7 @@ bool eboard::Sentio::nonCaptureMove(std::vector<uint8_t> const& occupiedSquares,
             if (expectedSquares == occupiedSquares) {
                 callCallback(toBoardArray(board));
             } else {
-                // castles - need rooks to move as well
+                // special handling for castling - rook needs to move as well
                 std::vector<uint8_t> miss;
                 std::vector<uint8_t> ex;
                 setDifference(expectedSquares, occupiedSquares, miss, ex);
@@ -172,17 +172,42 @@ bool eboard::Sentio::nonCaptureMove(std::vector<uint8_t> const& occupiedSquares,
     return false;
 }
 
-void eboard::Sentio::incompleteMove(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra) {
-    if (missing.size() == 1 && extra.empty()) {
-        std::array<StoneId, 64> boardArray = toBoardArray(board);
-        boardArray[toBoardArraySquare(missing[0])] = 0;
-        callCallback(boardArray);
-    } else if (!missing.empty()) {
+void eboard::Sentio::incompleteMove(std::vector<uint8_t> const& missing) {
+    checkForPromotionPieceChange(missing);
+    if (!missing.empty()) {
         std::array<StoneId, 64> boardArray = toBoardArray(board);
         for (auto sq : missing) {
             boardArray[toBoardArraySquare(sq)] = 0;
         }
         callCallback(boardArray);
+    }
+}
+
+void eboard::Sentio::checkForPromotionPieceChange(const std::vector<uint8_t>& missing) {
+    if (missing.size() == 2 || missing.size() == 3) {
+        uint8_t kingSquare = 128; // invalid square
+        uint8_t pawnSquare = 128; // invalid square
+        for (auto sq : missing) {
+            uint8_t piece = board.getPiece(sq);
+            if (piece == chess::K || piece == chess::k) {
+                kingSquare = sq;
+            }
+            if (piece == chess::P || piece == chess::p) {
+                pawnSquare = sq;
+            }
+        }
+        if (kingSquare != 128 && pawnSquare != 128 &&
+            board.getPieceColor(kingSquare) == board.getPieceColor(pawnSquare) &&
+            ((board.getPieceColor(pawnSquare) == chess::white && pawnSquare < 16) ||
+             (board.getPieceColor(pawnSquare) == chess::black && pawnSquare > 47))) {
+            if (promoteToPieceWhite == chess::Q) {
+                promoteToPieceWhite = chess::N;
+                promoteToPieceBlack = chess::n;
+            } else {
+                promoteToPieceWhite++;
+                promoteToPieceBlack++;
+            }
+        }
     }
 }
 
@@ -221,14 +246,21 @@ bool eboard::Sentio::captureMove(std::vector<uint8_t> const& missing, std::vecto
 
 bool eboard::Sentio::makeMove(uint8_t fromSquare, uint8_t toSquare) {
     auto moves = board.generate_moves();
-    int i = 1;
     for (uint32_t move : moves) {
         if (fromSquare == get_move_source_64(move) && toSquare == get_move_target_64(move)) {
-            return board.make_move(move);
+            uint32_t promoPiece = get_move_piece(move);
+            if (!promoPiece || promoPiece == promoteToPieceWhite || promoPiece == promoteToPieceBlack) {
+                resetPromoteToPieces();
+                return board.make_move(move);
+            }
         }
-        i++;
     }
     return false;
+}
+
+void eboard::Sentio::resetPromoteToPieces() {
+    promoteToPieceWhite = chess::Q;
+    promoteToPieceBlack = chess::q;
 }
 
 bool eboard::Sentio::isPossibleCapture(std::vector<uint8_t> const& missing, std::vector<uint8_t> const& extra) {

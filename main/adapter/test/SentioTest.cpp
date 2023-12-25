@@ -141,7 +141,7 @@ TEST_F(SentioTest, captureMove) {
 
 TEST_F(SentioTest, castlesMove) {
     givenAnInstance("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4");
-    givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ3R"); // Ke1 up
+    givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ3R");  // Ke1 up
     givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ2KR"); // Kg1 down
     thenLastReceivedBoardShouldBe("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ2KR");
     givenOccupiedIsCalledWith("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ2K1"); // Rh1 up
@@ -258,13 +258,77 @@ TEST_F(SentioTest, takeBack_C) {
     givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR"); // d5 down
     givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR");   // d5 up
     givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/8/8/8/PPPP1PPP/RNBQKBNR");     // e4 up
-    givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR"); // d5 down
+    givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR");   // d5 down
 
     // take back exd5
-    givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/8/8/8/PPPP1PPP/RNBQKBNR"); // d5 up
+    givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/8/8/8/PPPP1PPP/RNBQKBNR");   // d5 up
     givenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR"); // d5 moved to e4
     thenLastReceivedBoardShouldBe("rnbqkbnr/ppp1pppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR");
     whenOccupiedIsCalledWith("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR"); // d5 down
 
     thenLastReceivedBoardShouldBe("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR");
+}
+
+TEST_F(SentioTest, promoteToQueen) {
+    givenAnInstance("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR w KQkq");
+    givenOccupiedIsCalledWith("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // Pawn b7 up
+    whenOccupiedIsCalledWith("rQbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Queen b8 down
+    thenLastReceivedBoardShouldBe("rQbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR"); // b8=Q
+}
+
+TEST_F(SentioTest, promoteToQueenWithCapture) {
+    givenAnInstance("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR w KQkq");
+    givenOccupiedIsCalledWith("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // Pawn b7 up
+    givenOccupiedIsCalledWith("2bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Rook a8 up
+    whenOccupiedIsCalledWith("Q1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Queen a8 down
+    thenLastReceivedBoardShouldBe("Q1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR"); // bxa8=Q
+}
+
+TEST_F(SentioTest, promoteToKnight) {
+    givenAnInstance("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR w KQkq");
+    givenOccupiedIsCalledWith("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // Pawn b7 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQ1BNR");     // King e1 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // King e1 down
+    whenOccupiedIsCalledWith("rNbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Knight b8 down
+    thenLastReceivedBoardShouldBe("rNbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR"); // b8=N
+}
+
+TEST_F(SentioTest, promoteToKnightWithCapture) {
+    givenAnInstance("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR w KQkq");
+    givenOccupiedIsCalledWith("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // Pawn b7 up
+    givenOccupiedIsCalledWith("2bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Rook a8 up
+    givenOccupiedIsCalledWith("2bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQ1BNR");      // King e1 up
+    givenOccupiedIsCalledWith("2bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // King e1 down
+    whenOccupiedIsCalledWith("N1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Knight a8 down
+    thenLastReceivedBoardShouldBe("N1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR"); // bxa8=N
+}
+
+TEST_F(SentioTest, promoteToBishop) {
+    givenAnInstance("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR w KQkq");
+    givenOccupiedIsCalledWith("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // Pawn b7 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQ1BNR");     // King e1 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // King e1 down
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQ1BNR");     // King e1 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // King e1 down
+    whenOccupiedIsCalledWith("rBbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Bishop b8 down
+    thenLastReceivedBoardShouldBe("rBbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR"); // b8=B
+}
+
+TEST_F(SentioTest, promoteToRook) {
+    givenAnInstance("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR w KQkq");
+    givenOccupiedIsCalledWith("r1bqkbnr/pPpppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // Pawn b7 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQ1BNR");     // King e1 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // King e1 down
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQ1BNR");     // King e1 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // King e1 down
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQ1BNR");     // King e1 up
+    givenOccupiedIsCalledWith("r1bqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");     // King e1 down
+    whenOccupiedIsCalledWith("rRbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR");      // Rook b8 down
+    thenLastReceivedBoardShouldBe("rRbqkbnr/p1pppppp/8/8/8/8/PPP1PPPP/RNBQKBNR"); // b8=R
 }
