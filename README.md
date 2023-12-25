@@ -34,10 +34,24 @@ the pieces are registered. This calibration takes a few seconds and must be repe
 ### Tabutronic Sentio e-boards
 
 Place the chess pieces on the corresponding squares of the starting position. Do not place additional queens on the board.
-Since the hardware of Sentio e-boards does not support piece recognition, there are some limitations:
+Since the hardware of Sentio e-boards does not support piece recognition, there is one limitation:
 
 * Chess games can only be started from the normal chess starting position. At the end of a game, place all the pieces back to the starting position.
-* Under-promotion is not currently supported, a pawn is always promoted to a queen.
+
+#### Underpromotion
+
+By default, a pawn is promoted to a queen. To promote to a knight, bishop or rook, use the following sequence:
+
+1. pick up the pawn to promote
+2. pick up the king of the same color
+3. put down the king --> the promotion piece becomes a knight
+4. put down the promotion piece on the promotion square
+    
+- Follow steps 2+3 twice to convert the promotion piece into a bishop.
+- Follow steps 2+3 three times to convert the promotion piece into a rook.
+- Follow steps 2+3 four times to convert the promotion piece back into a queen.
+
+The change of the promotion piece is only valid for the next promotion; any other move resets the promotion piece back to a queen.
 
 ### Switching between e-boards
 
