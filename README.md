@@ -56,3 +56,13 @@ The change of the promotion piece is only valid for the next promotion; any othe
 ### Switching between e-boards
 
 When switching between e-boards, always turn off the module before changing boards.
+
+## Example videos
+
+Playing on a Certabo e-board with the official Chessnut app for Android:
+
+[![Certabo to Chessnut adapter using an ESP32-S3 development board](certabo_video.jpg?raw=true)](https://youtu.be/TdJrJ_2FbKA "Certabo to Chessnut adapter using an ESP32-S3 development board")
+
+Playing on a Tabutronic Sentio e-board with the official Chessnut app for iOS:
+
+[![Tabutronic Sentio disguised as Chessnut Air](sentio_video.jpg?raw=true)](https://youtu.be/Mfb8jt4EoKU "Tabutronic Sentio disguised as Chessnut Air")
