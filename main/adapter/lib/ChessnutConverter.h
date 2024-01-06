@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 
 #include "CertaboCalibrator.h"
 
@@ -22,7 +23,8 @@ class ChessnutConverter {
     /**
      * Constructor
      * @param boardCallback Callback function for board data, shall be sent via BLE to the controlling app
-     * @param infoCallback Callback function for acknowledgement, battery information or other data, shall be sent via BLE
+     * @param infoCallback Callback function for acknowledgement, battery information or other data, shall be sent via
+     * BLE
      */
     explicit ChessnutConverter(ConverterCallbackFunction boardCallback, ConverterCallbackFunction infoCallback);
 
