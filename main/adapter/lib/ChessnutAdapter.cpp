@@ -14,37 +14,129 @@ std::array<eboard::StoneId, 64> const ChessnutAdapter::STANDARD_POSITION{2,   3,
                                                                          129, 129, 129, 129, 129, 129, 129, 129, //
                                                                          130, 131, 132, 133, 134, 132, 131, 130};
 
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_A3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     6,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_B3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     0,   6,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_C3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     0,   0,   6,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_D3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     0,   0,   0,   6,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_E3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     0,   0,   0,   0,   6,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_F3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     0,   0,   0,   0,   0,   6,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_G3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     0,   0,   0,   0,   0,   0,   6,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
+std::array<eboard::StoneId, 64> const ChessnutAdapter::WHITE_KING_H3{2,   3,   4,   5,   0,   4,   3,   2,   //
+                                                                     1,   1,   1,   1,   1,   1,   1,   1,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   6,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     0,   0,   0,   0,   0,   0,   0,   0,   //
+                                                                     129, 129, 129, 129, 129, 129, 129, 129, //
+                                                                     130, 131, 132, 133, 134, 132, 131, 130};
+
 ChessnutAdapter::ChessnutAdapter(ToUsbFunction toUsb, ToBleFunction toBle)
-    : calibrationLeds({0xff, 0xff, 0x08, 0, 0, 0x08, 0xff, 0xff}), ledControl(std::move(toUsb)), toBle(std::move(toBle)),
-      boardMessageParser(
-          [this](std::array<eboard::StoneId, 64> const &board) {
-              if (!initialPositionReceived && board == STANDARD_POSITION) {
-                  initialPositionReceived = true;
-                  if (!pieceRecognition) {
-                      lightCenterLeds();
-                  }
-              }
-              if (initialPositionReceived) {
-                  converter.process(board);
-              } else if (!pieceRecognition) {
-                  calibrationLeds = {0xff, 0xff, 0, 0, 0, 0, 0xff, 0xff};
-                  for (int square = 0; square < 64; square++) {
-                      if (board.at(square) != ChessData::NO_STONE) {
-                          clearBitForSquare(calibrationLeds, square);
-                      }
-                  }
-                  ledCommand(calibrationLeds);
-              }
-          },
-          [this](bool hasPieceRecognition) {
-              pieceRecognition = hasPieceRecognition;
-              if (hasPieceRecognition) {
-                  calibrationLeds = {0xff, 0xff, 0x08, 0, 0, 0x08, 0xff, 0xff};
-                  ledCommand(calibrationLeds);
-              } else {
-                  ledControl.setProcessingTime(200);
-              }
-          }),
+    : calibrationLeds({0xff, 0xff, 0x08, 0, 0, 0x08, 0xff, 0xff}), ledControl(std::move(toUsb)),
+      toBle(std::move(toBle)), boardMessageParser(
+                                   [this](std::array<eboard::StoneId, 64> const& board) {
+                                       if (board == WHITE_KING_A3) {
+                                           ledControl.setBrightness(0x30);
+                                       } else if (board == WHITE_KING_B3) {
+                                           ledControl.setBrightness(0x39);
+                                       } else if (board == WHITE_KING_C3) {
+                                           ledControl.setBrightness(0x3f);
+                                       } else if (board == WHITE_KING_D3) {
+                                           ledControl.setBrightness(0x40);
+                                       } else if (board == WHITE_KING_E3) {
+                                           ledControl.setBrightness(0x7f);
+                                       } else if (board == WHITE_KING_F3) {
+                                           ledControl.setBrightness(0x80);
+                                       } else if (board == WHITE_KING_G3) {
+                                           ledControl.setBrightness(0xb0);
+                                       } else if (board == WHITE_KING_H3) {
+                                           ledControl.setBrightness(0xfe);
+                                       }
+                                       if (!initialPositionReceived && board == STANDARD_POSITION) {
+                                           initialPositionReceived = true;
+                                           if (!pieceRecognition) {
+                                               lightCenterLeds();
+                                           }
+                                       }
+                                       if (initialPositionReceived) {
+                                           converter.process(board);
+                                       } else if (!pieceRecognition) {
+                                           calibrationLeds = {0xff, 0xff, 0, 0, 0, 0, 0xff, 0xff};
+                                           for (int square = 0; square < 64; square++) {
+                                               if (board.at(square) != ChessData::NO_STONE) {
+                                                   clearBitForSquare(calibrationLeds, square);
+                                               }
+                                           }
+                                           ledCommand(calibrationLeds);
+                                       }
+                                   },
+                                   [this](bool hasPieceRecognition) {
+                                       pieceRecognition = hasPieceRecognition;
+                                       if (hasPieceRecognition) {
+                                           calibrationLeds = {0xff, 0xff, 0x08, 0, 0, 0x08, 0xff, 0xff};
+                                           ledCommand(calibrationLeds);
+                                       } else {
+                                           ledControl.setProcessingTime(200);
+                                       }
+                                   },
+                                   [this](bool hasRgbLeds) {
+                                       ledControl.ledsDetected(hasRgbLeds);
+                                   }),
       calibrator(
           [this](eboard::Stones const& stones) {
               boardMessageParser.updateStones(stones);
@@ -54,6 +146,9 @@ ChessnutAdapter::ChessnutAdapter(ToUsbFunction toUsb, ToBleFunction toBle)
           [this](int square) {
               clearBitForSquare(calibrationLeds, square);
               ledCommand(calibrationLeds);
+          },
+          [this](bool hasRgbLeds) {
+              ledControl.ledsDetected(hasRgbLeds);
           }),
       converter(
           [this](uint8_t* data, size_t data_len) {
@@ -82,7 +177,7 @@ void ChessnutAdapter::clearBitForSquare(std::vector<uint8_t>& data, int square) 
     data[posByte] = newByte;
 }
 
-void ChessnutAdapter::fromUsb(uint8_t* data, size_t data_len) {
+void ChessnutAdapter::fromUsb(const uint8_t* data, size_t data_len) {
     if (!calibrationComplete && pieceRecognition) {
         calibrator.calibrate(data, data_len);
     } else {

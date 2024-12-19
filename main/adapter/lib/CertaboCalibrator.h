@@ -18,6 +18,10 @@ using Stones = std::map<CertaboPiece, StoneId>;
  * Function to be called when calibration is complete.
  */
 using CalibrationCompleteFunction = std::function<void(Stones&)>;
+/**
+ * Function for when LEDs are detected.
+ */
+using LedsDetectedFunction = std::function<void(bool)>;
 
 /**
  * CertaboCalibrator calibrates the board.
@@ -27,7 +31,8 @@ using CalibrationCompleteFunction = std::function<void(Stones&)>;
 class CertaboCalibrator : public BoardTranslator {
   public:
     CertaboCalibrator(CalibrationCompleteFunction completeFunction,
-                      CalibrationCompleteForSquareFunction completeForSquareFunction);
+                      CalibrationCompleteForSquareFunction completeForSquareFunction,
+                      LedsDetectedFunction ledsDetectedFunction);
     ~CertaboCalibrator() override = default;
 
   public:
@@ -43,9 +48,11 @@ class CertaboCalibrator : public BoardTranslator {
      */
     void translate(std::vector<CertaboPiece> const& board) override;
 
-    void translateOccupiedSquares(std::array<bool, 64> const& board) override{
+    void translateOccupiedSquares(std::array<bool, 64> const& board) override {
         // ignore
     };
+
+    void ledsDetected(bool hasRgbLeds) override;
 
     /**
      * Calibrate raw board data.
@@ -53,13 +60,14 @@ class CertaboCalibrator : public BoardTranslator {
      * @param data raw Certabo board data
      * @param data_len length of the raw Certabo board data
      */
-    void calibrate(uint8_t* data, size_t data_len);
+    void calibrate(const uint8_t* data, size_t data_len);
 
   private:
     bool checkPieces();
 
     CalibrationCompleteFunction completeFunction;
     CalibrationCompleteForSquareFunction completeForSquareFunction;
+    LedsDetectedFunction ledsDetectedFunction;
     CertaboParser parser;
     std::vector<std::vector<CertaboPiece>> receivedBoards;
     bool calibrationComplete = false;

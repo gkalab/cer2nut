@@ -4,10 +4,11 @@
 
 using eboard::CertaboCalibrator;
 
-CertaboCalibrator::CertaboCalibrator(eboard::CalibrationCompleteFunction completeFunction,
-                                     eboard::CalibrationCompleteForSquareFunction completeForSquareFunction)
+CertaboCalibrator::CertaboCalibrator(CalibrationCompleteFunction completeFunction,
+                                     CalibrationCompleteForSquareFunction completeForSquareFunction,
+                                     LedsDetectedFunction ledsDetectedFunction)
     : completeFunction(std::move(completeFunction)), completeForSquareFunction(std::move(completeForSquareFunction)),
-      parser(*this) {
+      ledsDetectedFunction(std::move(ledsDetectedFunction)), parser(*this) {
     for (int i = 0; i < 16; i++) {
         // black squares
         calibrationSquares.emplace_back(i);
@@ -20,7 +21,7 @@ CertaboCalibrator::CertaboCalibrator(eboard::CalibrationCompleteFunction complet
     calibrationSquares.emplace_back(43); // white extra queen square
 }
 
-void CertaboCalibrator::calibrate(uint8_t* data, size_t data_len) {
+void CertaboCalibrator::calibrate(const uint8_t* data, size_t data_len) {
     parser.parse(data, data_len);
 }
 
@@ -46,6 +47,10 @@ void CertaboCalibrator::translate(std::vector<CertaboPiece> const& board) {
             receivedBoards.erase(receivedBoards.begin(), receivedBoards.end() - 10);
         }
     }
+}
+
+void CertaboCalibrator::ledsDetected(bool hasRgbLeds) {
+    ledsDetectedFunction(hasRgbLeds);
 }
 
 bool CertaboCalibrator::checkPieces() {

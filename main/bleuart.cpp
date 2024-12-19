@@ -238,12 +238,10 @@ static std::string toHex(unsigned const char* data, int len) {
 }
 
 static void toUsb(uint8_t* data, size_t data_len) {
-    if (data_len > 0 && Usb::vcp != nullptr) { // TODO check for nullptr should not be necessary here, crashes without
+    std::lock_guard<std::mutex> guard(Usb::vcp_mutex);
+    if (data_len > 0 && Usb::vcp != nullptr) {
         // std::cout << "-->usb:" << toHex(data, data_len) << std::endl;
-        std::lock_guard<std::mutex> guard(Usb::vcp_mutex);
-        if (Usb::vcp != nullptr) {
-            Usb::vcp->tx_blocking(data, data_len, 600);
-        }
+        Usb::vcp->tx_blocking(data, data_len, 1000);
     }
 }
 
@@ -329,7 +327,7 @@ int BleUart::bleuart_gap_event(struct ble_gap_event* event, void* arg) {
     return 0;
 }
 
-void BleUart::notify(uint8_t* data, size_t data_len) {
+void BleUart::notify(const uint8_t* data, size_t data_len) {
     // std::cout << "usb<--:" << toHex(data, data_len) << std::endl;
     chessnutAdapter.fromUsb(data, data_len);
 }

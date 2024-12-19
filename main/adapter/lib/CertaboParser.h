@@ -15,7 +15,7 @@ class CertaboParser {
 
   public:
     explicit CertaboParser(BoardTranslator& translator);
-    void parse(uint8_t* data, size_t data_len);
+    void parse(const uint8_t* data, size_t data_len);
 
   private:
     template <typename T> std::vector<T> strSplit(const T& str, const T& delimiters) {

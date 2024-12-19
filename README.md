@@ -12,7 +12,7 @@ This software is only compatible with development boards having a ESP32-S3-WROOM
 ## Software requirements
 
 
-ESP-IDF >= 5.1.1 https://idf.espressif.com/
+ESP-IDF == 5.2.1 https://github.com/espressif/esp-idf/releases/tag/v5.2.1
 
 ## Connection
 
@@ -52,6 +52,11 @@ By default, a pawn is promoted to a queen. To promote to a knight, bishop or roo
 - Follow steps 2+3 four times to convert the promotion piece back into a queen.
 
 The change of the promotion piece is only valid for the next promotion; any other move resets the promotion piece back to a queen.
+
+### Tabutronic Spectrum e-boards
+
+To change the brightness of the LEDs, place all the pieces in their starting positions and then place the white king on A3, B3, ..., or H3. 
+Placing the white king on A3 selects the lowest brightness, while placing it on H3 selects the highest brightness.
 
 ### Switching between e-boards
 

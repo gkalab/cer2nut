@@ -20,6 +20,7 @@ class CertaboParserTest : public ::testing::Test {
         MOCK_METHOD(void, hasPieceRecognition, (bool pieceRecognition), (override));
         MOCK_METHOD(void, translate, (std::vector<CertaboPiece> const& board), (override));
         MOCK_METHOD(void, translateOccupiedSquares, ((std::array<bool, 64> const& occupied)), (override));
+        MOCK_METHOD(void, ledsDetected, (bool hasRgbLeds), (override));
     };
 
   protected:
@@ -51,6 +52,10 @@ class CertaboParserTest : public ::testing::Test {
 
     void expectTranslateOccupiedSquaresToBeCalledWith(std::array<bool, 64> const& expected) {
         EXPECT_CALL(translator, translateOccupiedSquares(expected)).Times(1);
+    }
+
+    void expectLedsDetectedToBeCalledWith(bool expected) {
+        EXPECT_CALL(translator, ledsDetected(expected)).Times(1);
     }
 
     void expectNoCallsToTranslate() {
@@ -184,4 +189,14 @@ TEST_F(CertaboParserTest, parsePositionTabutronicOnePieceMissing) {
     };
     expectTranslateOccupiedSquaresToBeCalledWith(board);
     whenParseIsCalledWith(":255 255 0 0 0 0 255 254\nL\r\n");
+}
+
+TEST_F(CertaboParserTest, detectSingleColorLedBoard) {
+    expectLedsDetectedToBeCalledWith(false);
+    whenParseIsCalledWith(":255 255 0 0 0 0 255 254\nL\r\n");
+}
+
+TEST_F(CertaboParserTest, detectRgbLedBoard) {
+    expectLedsDetectedToBeCalledWith(true);
+    whenParseIsCalledWith(":255 255 0 0 0 0 255 254\nD\r\n");
 }

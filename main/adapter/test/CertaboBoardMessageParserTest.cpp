@@ -21,12 +21,13 @@ class CertaboBoardMessageParserTest : public ::testing::Test {
             },
             [this](bool pieceRecognition) {
                 hasPieceRecognition = pieceRecognition;
-            });
+            },
+            [this](bool hasRgbLeds) {});
         CertaboCalibrator calibrator(
             [this](eboard::Stones const& stones) {
                 boardMessageParser->updateStones(stones);
             },
-            [](int square) {});
+            [](int square) {}, [](bool hasRgbLeds) {});
         std::string boardData(
             ":48 0 248 71 99 48 0 248 85 159 48 0 177 203 192 48 0 177 215 17 48 0 177 117 59 48 0 177 43 7 48 0 248 "
             "222 81 48 0 247 200 86 48 0 248 114 180 48 0 248 155 251 48 0 248 48 74 48 0 177 236 131 48 0 177 230 12 "

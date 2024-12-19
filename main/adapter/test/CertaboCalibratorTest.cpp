@@ -18,7 +18,7 @@ class CertaboCalibratorTest : public ::testing::Test {
             [this](const eboard::Stones&) {
                 complete = true;
             },
-            [](int square) {});
+            [](int square) {}, [](bool hasRgbLeds) {});
     }
 
     void givenCalibrationWith(std::string const& str) {

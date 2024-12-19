@@ -9,22 +9,24 @@ using eboard::CertaboBoardMessageParser;
 using eboard::Sentio;
 
 CertaboBoardMessageParser::CertaboBoardMessageParser(CallbackFunction callbackFunction,
-                                                     PieceRecognitionCallbackFunction pieceRecognitionCallbackFunction)
+                                                     PieceRecognitionCallbackFunction pieceRecognitionCallbackFunction,
+                                                     LedsDetectedFunction ledsDetectedFunction)
     : parser(CertaboParser(*this)), callback(std::move(callbackFunction)),
       sentio(Sentio([this](std::array<StoneId, 64> board) {
           callback(board);
       })),
-      pieceRecognitionCallback(std::move(pieceRecognitionCallbackFunction)) {}
+      pieceRecognitionCallback(std::move(pieceRecognitionCallbackFunction)),
+      ledsDetectedFunction(std::move(ledsDetectedFunction)) {}
 
-void CertaboBoardMessageParser::parse(uint8_t* msg, size_t data_len) {
+void CertaboBoardMessageParser::parse(const uint8_t* msg, size_t data_len) {
     parser.parse(msg, data_len);
 }
 
-void eboard::CertaboBoardMessageParser::hasPieceRecognition(bool canRecognize) {
+void CertaboBoardMessageParser::hasPieceRecognition(bool canRecognize) {
     pieceRecognitionCallback(canRecognize);
 }
 
-void eboard::CertaboBoardMessageParser::translate(std::vector<CertaboPiece> const& board) {
+void CertaboBoardMessageParser::translate(std::vector<CertaboPiece> const& board) {
     std::array<StoneId, 64> newBoard = {};
     int i = 0;
     for (auto& piece : board) {
@@ -39,11 +41,15 @@ void eboard::CertaboBoardMessageParser::translate(std::vector<CertaboPiece> cons
     averageLastBoards(newBoard);
 }
 
-void eboard::CertaboBoardMessageParser::translateOccupiedSquares(std::array<bool, 64> const& occupied) {
+void CertaboBoardMessageParser::translateOccupiedSquares(std::array<bool, 64> const& occupied) {
     sentio.occupiedSquares(occupied);
 }
 
-void CertaboBoardMessageParser::averageLastBoards(std::array<StoneId, 64> const &newBoard) {
+void CertaboBoardMessageParser::ledsDetected(bool hasRgbLeds) {
+    ledsDetectedFunction(hasRgbLeds);
+}
+
+void CertaboBoardMessageParser::averageLastBoards(std::array<StoneId, 64> const& newBoard) {
     while (boardHistory.size() > 2) {
         boardHistory.pop_front();
     }
@@ -77,6 +83,6 @@ int CertaboBoardMessageParser::toSquare(int index) {
     return row * 8 + col;
 }
 
-void eboard::CertaboBoardMessageParser::updateStones(eboard::Stones const& newStones) {
+void CertaboBoardMessageParser::updateStones(eboard::Stones const& newStones) {
     stones = newStones;
 }

@@ -45,7 +45,7 @@ class BleUart {
     static void bleuart_advertise(void);
 
     void init();
-    void notify(uint8_t* data, size_t data_len);
+    void notify(const uint8_t* data, size_t data_len);
     bool isConnected();
 
   private:

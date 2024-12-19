@@ -25,9 +25,10 @@ static const char* TAG = "cer2nut";
 
 static SemaphoreHandle_t device_disconnected_sem;
 
-static void handle_rx(uint8_t* data, size_t data_len, void* arg) {
+static bool handle_rx(const uint8_t* data, size_t data_len, void* arg) {
     BleUart* ble = (BleUart*)arg;
     ble->notify(data, data_len);
+    return true;
 }
 
 static void handle_event(const cdc_acm_host_dev_event_data_t* event, void* user_ctx) {
@@ -86,8 +87,9 @@ extern "C" void app_main(void) {
 
     while (true) {
         const cdc_acm_host_device_config_t dev_config = {
-            .connection_timeout_ms = 10000,
-            .out_buffer_size = 64,
+            .connection_timeout_ms = 1000,
+            .out_buffer_size = 512,
+            .in_buffer_size = 1024,
             .event_cb = handle_event,
             .data_cb = handle_rx,
             .user_arg = &ble,
@@ -100,9 +102,14 @@ extern "C" void app_main(void) {
                 Usb::vcp = CP210x::open_cp210x(CP210X_PID, &dev_config);
             }
         } catch (esp_err_t err) {
-            ESP_LOGE(TAG, "The required device was not opened.\nExiting...");
-            return;
+            ESP_LOGE(TAG, "The required device was not opened.");
+            continue;
         }
+        if (Usb::vcp == nullptr) {
+            ESP_LOGI(TAG, "Failed to open VCP device");
+            continue;
+        }
+        vTaskDelay(10);
 
         ESP_LOGI(TAG, "Setting up line coding");
         cdc_acm_line_coding_t line_coding = {
@@ -111,7 +118,10 @@ extern "C" void app_main(void) {
             .bParityType = PARITY,
             .bDataBits = DATA_BITS,
         };
-        ESP_ERROR_CHECK(Usb::vcp->line_coding_set(&line_coding));
+        {
+            std::lock_guard<std::mutex> guard(Usb::vcp_mutex);
+            ESP_ERROR_CHECK(Usb::vcp->line_coding_set(&line_coding));
+        }
 
         // We are done. Wait for device disconnection and start over
         xSemaphoreTake(device_disconnected_sem, portMAX_DELAY);

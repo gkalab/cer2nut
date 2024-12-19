@@ -7,6 +7,7 @@ idf_component_register(SRCS "vcpusb.cpp" "bleuart.cpp" "cer2nut.cpp" "cp210x_usb
                     "adapter/lib/CertaboLedControl.cpp"
                     "adapter/lib/ChessnutAdapter.cpp"
                     "adapter/lib/ChessnutConverter.cpp"
+                    "adapter/lib/RgbLedCommandTranslator.cpp"
                     "adapter/lib/Sentio.cpp"
                     "adapter/lib/Chess0x88.cpp"
                     INCLUDE_DIRS ".")

@@ -8,6 +8,8 @@
 #include <thread>
 #include <vector>
 
+#include "RgbLedCommandTranslator.h"
+
 namespace eboard {
 
 /** Callback function for sending data via USB. */
@@ -26,18 +28,26 @@ class CertaboLedControl {
 
     void setProcessingTime(int processingTimeMillis);
 
+    void ledsDetected(bool hasRgbLeds);
+
+    /** Set brightness of RGB LEDs */
+    void setBrightness(int brightnessValue);
+
   private:
     static std::vector<uint8_t> const LEDS_OFF;
     void processCommands();
 
     ToUsbFunction toUsb;
     std::list<std::vector<uint8_t>> pendingCommands;
-    int processingTimeMs = 600;
+    std::atomic_int processingTimeMs;
     uint64_t lastCommandTime = 0;
     std::vector<uint8_t> lastCommand;
     std::atomic_bool keepRunning;
+    std::atomic_bool ledsInitiallyDetected;
+    std::atomic_bool hasRgbLeds;
     std::mutex commandMutex;
     std::thread processingThread;
+    RgbLedCommandTranslator ledCommandTranslator;
 };
 
 } // namespace eboard

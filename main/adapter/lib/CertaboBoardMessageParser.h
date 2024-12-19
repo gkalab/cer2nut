@@ -14,6 +14,10 @@ namespace eboard {
 
 using CallbackFunction = std::function<void(std::array<StoneId, 64> const&)>;
 using PieceRecognitionCallbackFunction = std::function<void(bool hasPieceRecognition)>;
+/**
+ * Function for when LEDs are detected.
+ */
+using LedsDetectedFunction = std::function<void(bool)>;
 
 /**
  * CertaboBoardMessageParser translates raw board data to the internal board representation.
@@ -22,15 +26,17 @@ using PieceRecognitionCallbackFunction = std::function<void(bool hasPieceRecogni
 class CertaboBoardMessageParser : public BoardTranslator {
   public:
     CertaboBoardMessageParser(CallbackFunction callbackFunction,
-                              PieceRecognitionCallbackFunction pieceRecognitionCallbackFunction);
+                              PieceRecognitionCallbackFunction pieceRecognitionCallbackFunction,
+                              LedsDetectedFunction ledsDetectedFunction);
     ~CertaboBoardMessageParser() override = default;
 
   public:
     void hasPieceRecognition(bool canRecognize) override;
     void translate(std::vector<CertaboPiece> const& board) override;
     void translateOccupiedSquares(std::array<bool, 64> const& occupied) override;
+    void ledsDetected(bool hasRgbLeds) override;
 
-    void parse(uint8_t* msg, size_t data_len);
+    void parse(const uint8_t* msg, size_t data_len);
     void updateStones(Stones const& newStones);
 
   private:
@@ -49,6 +55,7 @@ class CertaboBoardMessageParser : public BoardTranslator {
     CallbackFunction callback;
     Sentio sentio;
     PieceRecognitionCallbackFunction pieceRecognitionCallback;
+    LedsDetectedFunction ledsDetectedFunction;
     std::list<std::array<StoneId, 64>> boardHistory;
 };
 

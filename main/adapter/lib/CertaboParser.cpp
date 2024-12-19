@@ -8,7 +8,7 @@ using eboard::CertaboPiece;
 
 CertaboParser::CertaboParser(BoardTranslator& translator) : translator(translator) {}
 
-void CertaboParser::parse(uint8_t* msg, size_t data_len) {
+void CertaboParser::parse(const uint8_t* msg, size_t data_len) {
     std::vector<uint8_t> data = buffer;
     data.insert(data.end(), msg, msg + data_len);
     buffer.clear();
@@ -34,9 +34,14 @@ void CertaboParser::parse(uint8_t* msg, size_t data_len) {
 }
 
 bool CertaboParser::parsePart(std::string& part) {
+    if (part.find('L') != std::string::npos) {
+        translator.ledsDetected(false);
+    } else if (part.find('D') != std::string::npos) {
+        translator.ledsDetected(true);
+    }
     part.erase(std::remove_if(part.begin(), part.end(),
                               [](unsigned char x) {
-                                  return (x == '\r' || x == '\n' || x == 'L');
+                                  return (x == '\r' || x == '\n' || x == 'L' || x == 'D');
                               }),
                part.end());
     std::vector<std::string> split_input = strSplit<std::string>(part, " ");

@@ -28,7 +28,7 @@ class ChessnutAdapter {
      * @param data
      * @param data_len
      */
-    void fromUsb(uint8_t* data, size_t data_len);
+    void fromUsb(const uint8_t* data, size_t data_len);
 
     /**
      * fromBle is called when data is received via BLE.
@@ -50,6 +50,14 @@ class ChessnutAdapter {
 
   private:
     static std::array<eboard::StoneId, 64> const STANDARD_POSITION;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_A3;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_B3;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_C3;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_D3;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_E3;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_F3;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_G3;
+    static std::array<eboard::StoneId, 64> const WHITE_KING_H3;
 
     static void clearBitForSquare(std::vector<uint8_t>& data, int square);
     void lightCenterLeds();
